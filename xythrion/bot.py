@@ -20,6 +20,8 @@ class Xythrion(Bot):
         """Creating import attributes."""
         super().__init__(*args, **kwargs)
 
+        self.startup_time = datetime.now()
+
         self.pool: Optional[asyncpg.pool.Pool] = None
         self.http_session: Optional[aiohttp.ClientSession] = None
 
@@ -33,7 +35,7 @@ class Xythrion(Bot):
     async def login(self, *args, **kwargs) -> None:
         """Creating all the important connections."""
         try:
-            self.pool = asyncpg.create_pool(Postgresql.asyncpg_config_url, command_timeout=60, loop=self.loop)
+            self.pool = asyncpg.create_pool(**Postgresql.asyncpg_config, command_timeout=60, loop=self.loop)
 
             log.trace("Successfully connected to Postgres database.")
 
