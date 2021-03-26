@@ -119,3 +119,7 @@ config/*.json
 
 # Postgresql
 postgres_data/
+
+# Testing stuff
+tests/
+test/
