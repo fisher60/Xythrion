@@ -11,10 +11,12 @@ class Config(NamedTuple):
 
 class Postgresql(NamedTuple):
     USER = environ.get("POSTGRES_USER")
+    PASSWORD = environ.get("POSTGRES_PASSWORD")
     HOST = environ.get("POSTGRES_HOST")
-    DATABASE = environ.get("POSTGRES_DATABASE")
+    DATABASE = environ.get("POSTGRES_DB")
 
     asyncpg_config_url = f"postgres://{USER}@{HOST}:5432/{DATABASE}"
+    asyncpg_config = {"user": USER, "password": PASSWORD, "host": HOST, "db": DATABASE}
 
 
 class WeatherAPIs(NamedTuple):

@@ -7,8 +7,10 @@ services:
     init: true
     restart: always
 
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: xythrion_postgres
+      POSTGRES_PASSWORD: placeholder
+      POSTGRES_USER: postgres
 
     ports:
     - "5432:5432"
