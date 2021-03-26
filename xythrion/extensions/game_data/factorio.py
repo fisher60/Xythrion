@@ -45,7 +45,7 @@ class Factorio(Cog):
 
         counts = collections.Counter([item["name"] for item in data["blueprint"]["entities"]])
 
-        embed_desc_string = '\n'.join(f"**{k.replace('-', ' ').title()}:** {v}" for k, v in counts.items())
+        embed_desc_string = "\n".join(f"**{k.replace('-', ' ').title()}:** {v}" for k, v in counts.items())
 
         embed_desc_string += f"\n\n**Total Items:** {sum(v for v in counts.values())}"
 
