@@ -1,4 +1,6 @@
-\c xythrion;
+CREATE DATABASE xythrion_postgres;
+
+\c xythrion_postgres;
 
 CREATE TABLE IF NOT EXISTS Dates(
     identification serial PRIMARY KEY,
