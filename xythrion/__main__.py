@@ -2,11 +2,12 @@ import logging
 
 from discord import AllowedMentions
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.constants import Config
 from xythrion.extensions import EXTENSIONS
 
 log = logging.getLogger(__name__)
+
 
 bot = Xythrion(
     command_prefix="\\",
