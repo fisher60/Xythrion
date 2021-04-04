@@ -4,20 +4,21 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-"discord.py" = "~=1.6.0"
-matplotlib = "~=3.3.4"
+"discord.py" = "~=1.7.0"
+matplotlib = "~=3.4.1"
 humanize = "~=3.3.0"
 coloredlogs = "~=15.0"
 tabulate = "~=0.8.9"
 fuzzywuzzy = "~=0.18.0"
 asyncpg = "~=0.22.0"
-numpy = "~=1.20.1"
+numpy = "~=1.20.2"
+mplcyberpunk = "~=0.1.11"
 sympy = "~=1.7.1"
 
 [dev-packages]
-flake8 = "~=3.8.4"
-flake8-annotations = "~=2.5.0"
-flake8-bugbear = "~=21.3.2"
+flake8 = "~=3.9.0"
+flake8-annotations = "~=2.6.2"
+flake8-bugbear = "~=21.4.3"
 flake8-docstrings = "~=1.6.0"
 flake8-import-order = "~=0.18.1"
 flake8-string-format = "~=0.3.0"
