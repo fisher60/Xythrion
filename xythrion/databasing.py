@@ -1,29 +1,54 @@
+import functools
 import logging
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List, Union
 
-from asyncpg.connection import Connection
+from asyncpg.connection import Connection as Conn
 from asyncpg.pool import Pool
 from discord.ext.commands import Context
 
 log = logging.getLogger(__name__)
 
 
+def connection_pool_accessor(func: Callable) -> Any:
+    """Giving a method a connection to a database from a connection pool."""
+
+    @functools.wraps(func)
+    async def wrapper(self, *args, **kwargs):
+        async with self.pool.acquire() as conn:
+            if kwargs["conn"] is None:
+                kwargs["conn"] = conn
+
+            await func(*args, **kwargs)
+
+    return wrapper
+
+
 class Database:
-    """Utilities for the database, inheriting from setup."""
+    """Utilities for the Postgres database."""
 
     def __init__(self, pool: Pool) -> None:
         self.pool = pool
 
-    async def connection_pool_accessor(self, func: Callable) -> Any:
+    @connection_pool_accessor
+    async def select(
+        self,
+        *,
+        table: str,
+        fields: Union[List[str], str] = "*",
+        info: Dict[str, Any],
+        conn: Conn,
+    ) -> list:
+        """Select from the database."""
+        selection_fields = f"({', '.join(fields)})" if isinstance(fields, list) else fields
 
-        async def wrapper(*args, **kwargs):
-            async with self.pool.acquire() as conn:
-                await func(conn, *args, **kwargs)
+        key_fields = ("WHERE " if len(info) else "") + (
+            " AND ".join(f"{k} = ${i}" for i, k in enumerate(info.keys()))
+        )
 
-        return wrapper
+        return await conn.fetch(f"SELECT {selection_fields} FROM {table} {key_fields}", *info.values())
 
     @connection_pool_accessor
-    async def insert(self, conn: Connection, table: str, info: Dict[str, Any]) -> None:
+    async def insert(self, *, table: str, info: Dict[str, Any], conn: Conn) -> None:
         """Insert into the database."""
         key_fields = ", ".join(info.keys())
         value_numbers = ", ".join(f"${i}" for i in range(1, len(info) + 1))
@@ -33,23 +58,19 @@ class Database:
         )
 
     @connection_pool_accessor
-    async def select(self, conn: Connection) -> None:
-        """Select from the database."""
-        pass
-
-    @connection_pool_accessor
-    async def delete(self, conn: Connection) -> None:
+    async def delete(self, *, table: str, info: Dict[str, Any], conn: Conn) -> None:
         """Delete from the database."""
-        pass
+        key_fields = " AND ".join(f"{k} = ${i}" for i, k in enumerate(info.keys()))
 
-    @connection_pool_accessor
-    async def check_if_blocked(self, conn: Connection, ctx: Context) -> bool:
+        await conn.execute(f"DELETE FROM {table} WHERE {key_fields}", *info.values())
+
+    async def check_if_blocked(self, ctx: Context) -> bool:
         """Checks if user/guild is blocked."""
-        user = await conn.fetch("SELECT * FROM Blocked_Users WHERE user_id = $1", ctx.author.id)
+        user = await self.select(table="Blocked_Users", info={"user_id": ctx.author.id})
 
         if not len(user):
             # If the user is not blocked, check if the guild is blocked.
-            guild = await conn.fetch("SELECT * FROM Blocked_Guilds WHERE guild_id = $1", ctx.guild.id)
+            guild = await self.select(table="Blocked_Guilds", info={"guild_id": ctx.guild.id})
 
             if not len(guild):
                 return True
