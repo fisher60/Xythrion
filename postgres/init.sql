@@ -4,25 +4,20 @@ CREATE DATABASE xythrion_postgres;
 
 CREATE TABLE IF NOT EXISTS Dates(
     identification serial PRIMARY KEY,
-    t TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    id BIGINT,
-    name TEXT
-);
-
-CREATE TABLE IF NOT EXISTS Notes(
-    identification serial PRIMARY KEY,
+    created_on TIMESTAMP WITH TIME ZONE,
     user_id BIGINT,
-    readers BIGINT[],
-    writers BIGINT[],
-    content TEXT[]
+    name TEXT,
+    time TIMESTAMP WITH TIME ZONE
 );
 
 CREATE TABLE IF NOT EXISTS Blocked_Guilds(
     identification serial PRIMARY KEY,
+    created_on TIMESTAMP WITH TIME ZONE,
     guild_id BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS Blocked_Users(
     identification serial PRIMARY KEY,
+    created_on TIMESTAMP WITH TIME ZONE,
     user_id BIGINT
 );
