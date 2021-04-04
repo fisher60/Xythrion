@@ -7,6 +7,7 @@ __all__ = ("Config", "Postgresql", "WeatherAPIs")
 class Config(NamedTuple):
     TOKEN = environ.get("BOT_TOKEN")
     GITHUB_URL = environ.get("GITHUB_URL", "https://github.com/Xithrius/Xythrion")
+    COMPUTATION_TIMEOUT = float(environ.get("COMPUTATION_TIMEOUT", 10.0))
 
 
 class Postgresql(NamedTuple):
