@@ -2,7 +2,7 @@ from discord import Permissions
 from discord.ext.commands import Cog, Context, command
 from discord.utils import oauth_url
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.constants import Config
 from xythrion.utils import DefaultEmbed, markdown_link
 

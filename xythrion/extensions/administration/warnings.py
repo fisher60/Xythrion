@@ -3,26 +3,21 @@ import logging
 from discord.ext import commands
 from discord.ext.commands import Cog, Context
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.utils import DefaultEmbed
 
 log = logging.getLogger(__name__)
 
 
 class Warnings(Cog, command_attrs=dict(hidden=True)):
-    """Warning the user about specific actions taken."""
+    """Warning a user about the actions that they've taken."""
 
     def __init__(self, bot: Xythrion) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: Context) -> None:
-        """Adds a reaction after a command is successfully completed."""
-        await ctx.message.add_reaction("\U00002705")
-
-    @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, e: commands.CommandError) -> None:
-        """When the command has an error, this event is triggered."""
+        """When a command has an error, this event is triggered."""
         if hasattr(ctx.command, "on_error"):
             return
 

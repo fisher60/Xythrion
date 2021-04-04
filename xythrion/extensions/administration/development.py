@@ -5,7 +5,7 @@ from typing import Optional
 import humanize
 from discord.ext.commands import Cog, Context, ExtensionNotLoaded, command, is_owner
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.extensions import EXTENSIONS
 from xythrion.utils import DefaultEmbed, Extension
 

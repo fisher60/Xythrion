@@ -1,4 +1,4 @@
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.extensions.requesters.reddit import Reddit
 from xythrion.extensions.requesters.tinyy import Tinyy
 from xythrion.extensions.requesters.weather import Weather

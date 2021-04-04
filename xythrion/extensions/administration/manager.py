@@ -2,7 +2,7 @@ from typing import Optional
 
 from discord.ext.commands import Cog, Context, command, is_owner
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.utils import DefaultEmbed
 
 

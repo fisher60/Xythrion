@@ -3,7 +3,7 @@ from datetime import datetime
 from discord.ext.commands import Cog, Context, Greedy, command
 from humanize import naturaldate, precisedelta
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.utils import DefaultEmbed
 
 

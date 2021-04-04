@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 from discord.ext.commands import Cog, Context, group
 
-from xythrion.bot import Xythrion
+from xythrion import Xythrion
 from xythrion.utils import DefaultEmbed, check_for_subcommands
 
 
