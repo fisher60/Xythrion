@@ -14,10 +14,9 @@ class Tinyy(Cog):
         self.bot = bot
 
     @command(aliases=("shorten_url", "shortener", "tinyy"))
-    async def url_shortener(self, ctx: Context, url: str) -> None:
+    async def url_shortener(self, ctx: Context, user_url: str) -> None:
         """Shortening a URL provided by the user."""
-        async with self.bot.http_session.post(URL, json={"url": url}, headers=HEADERS) as resp:
-            data = await resp.json()
+        data = await self.bot.network.post(URL, json_input={"url": user_url}, headers=HEADERS)
 
         embed = DefaultEmbed(ctx, desc=f'```{URL}/{data["code"]}```')
 
