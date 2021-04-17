@@ -1,26 +1,35 @@
-FROM python:3.8-slim
+# Obtaining Python.
+FROM python:3.9-slim
 
-# Allow service to handle stops gracefully
+# Allow service to handle stops gracefully.
 STOPSIGNAL SIGQUIT
 
-# Set pip to have cleaner logs and no saved cache
+# Set pip to have cleaner logs and no saved cache.
 ENV PIP_NO_CACHE_DIR=false \
-    PIPENV_HIDE_EMOJIS=1 \
-    PIPENV_IGNORE_VIRTUALENVS=1 \
-    PIPENV_NOSPIN=1
+    POETRY_VIRTUALENVS_CREATE=false
 
-# Install pipenv
-RUN pip install -U pipenv
+# Installing poetry
+RUN pip install --user poetry
 
-# Create the working directory
+# Adding poetry to the PATH environment variable.
+ENV PATH="${PATH}:/root/.local/bin"
+
+# Create the working directory.
 WORKDIR /xythrion
 
-# Install packages
-COPY Pipfile* ./
-RUN pipenv install --system --deploy
+# Copy configuration files.
+COPY pyproject.toml poetry.lock /xythrion/
 
-# Copy working directory
+# Install packages without development packages.
+RUN poetry install --no-dev --no-interaction --no-ansi
+
+# Set SHA build argument.
+ARG git_sha="development"
+ENV GIT_SHA=$git_sha
+
+# Copy working directory.
 COPY . .
 
-ENTRYPOINT ["python"]
-CMD ["-m", "xythrion"]
+# Run the bot.
+CMD ["python", "-m", "xythrion"]
+

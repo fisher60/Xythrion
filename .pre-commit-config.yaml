@@ -10,18 +10,18 @@ repos:
         args: [ --fix=lf ]
       - id: trailing-whitespace
 
-  - repo: https://github.com/psf/black
-    rev: 20.8b1
-    hooks:
-      - id: black
-        language_version: python3
-
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.8.0
     hooks:
       - id: python-check-blanket-noqa
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.0
+  - repo: local
     hooks:
       - id: flake8
+        name: Flake8
+        description: This hook runs flake8 within our project's poetry environment.
+        entry: poetry run flake8
+        language: system
+        types: [python]
+        require_serial: true
+
