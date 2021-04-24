@@ -23,7 +23,7 @@ class Links(Cog):
     @command()
     async def invite(self, ctx: Context) -> None:
         """Gives the invite link of this bot."""
-        url = oauth_url(self.bot.user.id, Permissions(3525696))
+        url = oauth_url(self.bot.user.id, Permissions(904256))
         embed = DefaultEmbed(ctx, description=markdown_link("invite_link", url))
 
         await ctx.send(embed=embed)
