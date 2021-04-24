@@ -1,6 +1,6 @@
 from discord.ext.commands import Cog, Context, group
 
-from xythrion import Xythrion, CustomContext
+from xythrion import CustomContext, Xythrion
 from xythrion.utils import DefaultEmbed, and_join, check_for_subcommands
 
 BASE_URL = "https://api.warframestat.us"
@@ -9,7 +9,7 @@ PLANET_CYCLES = ("earth", "cetus")
 
 
 class Warframe(Cog):
-    """Getting information about the state of Warframe"""
+    """Getting information about the state of Warframe."""
 
     def __init__(self, bot: Xythrion) -> None:
         self.bot = bot
@@ -30,7 +30,7 @@ class Warframe(Cog):
 
             return await ctx.send(embed=embed)
 
-        data = await self.bot.network.request(f"{BASE_URL}/{platform}")
+        data = await self.bot.request(f"{BASE_URL}/{platform}")
 
         planet_cycles = "\n".join(
             f"**{planet.title()}** - {data[planet + 'Cycle']['timeLeft']} remaining"
