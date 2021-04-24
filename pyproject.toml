@@ -9,18 +9,18 @@ homepage = "https://github.com/Xithrius/Xythrion"
 repository = "https://github.com/Xithrius/Xythrion"
 documentation = "https://github.com/Xithrius/Xythrion/README.md"
 
-
 [tool.poetry.dependencies]
 python = "^3.9"
-"discord.py" = "~=1.7.0"
-matplotlib = "~=3.4.1"
-humanize = "~=3.3.0"
-coloredlogs = "~=15.0"
-tabulate = "~=0.8.9"
-fuzzywuzzy = "~=0.18.0"
+async_lru = "~=1.0.2"
 asyncpg = "~=0.22.0"
+coloredlogs = "~=15.0"
+"discord.py" = "~=1.7.0"
+fuzzywuzzy = "~=0.18.0"
+humanize = "~=3.4.1"
+matplotlib = "~=3.4.1"
 numpy = "~=1.20.2"
-sympy = "~=1.7.1"
+sympy = "~=1.8.0"
+tabulate = "~=0.8.9"
 
 [tool.poetry.dev-dependencies]
 flake8 = "~=3.9.0"
@@ -29,10 +29,10 @@ flake8-bugbear = "~=21.4.3"
 flake8-docstrings = "~=1.6.0"
 flake8-import-order = "~=0.18.1"
 flake8-string-format = "~=0.3.0"
-flake8-tidy-imports = "~=4.1.0"
+flake8-tidy-imports = "~=4.2.1"
 flake8-todo = "~=0.7"
 pep8-naming = "~=0.11.1"
-pre-commit = "~=2.11.1"
+pre-commit = "~=2.12.1"
 
 [tool.taskipy.tasks]
 start = "python -m xythrion"
@@ -42,4 +42,3 @@ lint = "pre-commit run --all-files"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
