@@ -10,22 +10,21 @@
     <a href="#changelog">Changelog</a>
 </p>
 
-
 # Setup:
-*NOTE*:
-- The following examples of setup assumes that you've copied and modified the contents of `.env-example` to `.env`.
+
+*NOTE*: The following assumes that you've copied and modified the contents of `.env-example` to `.env`.
 
 1. Setting up the database:
+
 ```shell
 docker pull postgres
 docker run --name postgres -e POSTGRES_PASSWORD=placeholder -d postgres
 ```
 
 2. Starting the bot:
-The entire bot can be set up with `docker-compose up`.
-
+   The entire bot can be set up with `docker-compose up`.
 
 # Development:
+
 - When dependencies are updated, run `poetry lock`.
 - When linting code, do `poetry run task lint` after running `poetry run task precommit` a total of 1 time ever.
-
