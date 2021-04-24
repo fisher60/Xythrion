@@ -1,82 +1,66 @@
 import asyncio
-import functools
 import logging
-from abc import ABC
 from datetime import datetime
-from typing import Any, Awaitable, Callable, Optional
+from typing import Coroutine, Optional
 
 import aiohttp
 import asyncpg
-from discord.ext.commands import Bot, Context
+from discord import Message
+from discord.ext import commands
 
-from xythrion.constants import Config, Postgresql
+from xythrion import Context
+from xythrion.constants import Postgresql
 from xythrion.databasing import Database
-from xythrion.network import Network
 
 log = logging.getLogger(__name__)
 
 
-class CustomAbstractEventLoop(asyncio.AbstractEventLoop, ABC):
-    """Giving the abstract event loop more methods."""
-
-    @staticmethod
-    async def run_in_executor(func: Callable, *args: Optional[Any], executor: Optional[Any] = None) -> Awaitable:
-        """Executor is never used. Defaulting to None."""
-        return super().run_in_executor(executor, func, *args)
-
-    async def graph_executor(self, func: Callable, calculate_func: Optional[Callable] = None) -> Any:
-        """
-        Method for computing stuff before the call to the executor to run the plotting method.
-
-        The computation function will not be ran if it doesn't exist.
-
-        I wouldn't look at this too closely. I programmed it at 3am.
-        """
-        f_calculate_func = None if calculate_func is None else self.run_in_executor(calculate_func)
-
-        try:
-            if f_calculate_func is None:
-                return await asyncio.wait_for(self.run_in_executor(func), Config.COMPUTATION_TIMEOUT, loop=self)
-            else:
-                computation_result = await asyncio.wait_for(f_calculate_func, Config.COMPUTATION_TIMEOUT, loop=self)
-                f_func = functools.partial(func, computation_result)
-                return await asyncio.wait_for(f_func, Config.COMPUTATION_TIMEOUT, loop=self)
-
-        except asyncio.TimeoutError:
-            log.warning(f"Plotting could not finish in {Config.COMPUTATION_TIMEOUT} seconds. Aborting.")
-
-
-class CustomContext(Context):
-    """Customization of methods for context."""
-
-    async def send(self, *args, **kwargs) -> None:
-        """
-        The same as the regular send function, but returns nothing.
-
-        This is useful for having a return statement along with a send function on the same line.
-        """
-        await super().send(*args, **kwargs)
-
-
-class Xythrion(Bot, CustomAbstractEventLoop, ABC):
+class Xythrion(commands.Bot):
     """A subclass where important tasks and connections are created."""
 
     def __init__(self, *args, **kwargs) -> None:
         """Creating import attributes."""
-        super(Xythrion, self).__init__(*args, **kwargs)
-        super(CustomAbstractEventLoop).__init__()
+        super().__init__(*args, **kwargs)
 
         self.startup_time = datetime.now()
 
         self.pool: Optional[asyncpg.pool.Pool] = None
         self.http_session: Optional[aiohttp.ClientSession] = None
+        self.db: Optional[Database] = None
 
-        self.database: Optional[Database] = None
-        self.network: Optional[Network] = None
+        self.add_check(self.check_if_blocked)
 
-    async def get_context(self, message, *, cls=CustomContext):
+    async def check_if_blocked(self, ctx: Context) -> bool:
+        """If user and/or guild is blocked, no commands by this bot can be ran."""
+        user = await self.db.select(table="blocked_users", info={"user_id": ctx.author.id})
+
+        if not len(user):
+            # If the user is not blocked, check if the guild is blocked.
+            guild = await self.db.select(table="blocked_guilds", info={"guild_id": ctx.guild.id})
+
+            if not len(guild):
+                return True
+
+        # If none of the checks passed, either the guild or the user is blocked.
+        return False
+
+    async def get_context(self, message: Message, *, cls: commands.Context = Context) -> Coroutine:
         """Creating a custom context so new methods can be made for quality of life changes."""
         return await super().get_context(message, cls=cls)
+
+    async def request(self, url: str, **kwargs) -> dict:
+        """Requesting from a URl."""
+        async with self.http_session.get(url, **kwargs) as response:
+            assert response.status == 200, f"Could not request from URL. Status {response.status}."
+
+            return await response.json()
+
+    async def post(self, url: str, **kwargs) -> dict:
+        """Posting to a URL."""
+        async with self.http_session.post(url, **kwargs) as response:
+            assert response.status == 200, f"Could not post to URL. Status {response.status}."
+
+            return await response.json()
 
     @staticmethod
     async def on_ready() -> None:
@@ -85,19 +69,13 @@ class Xythrion(Bot, CustomAbstractEventLoop, ABC):
 
     async def login(self, *args, **kwargs) -> None:
         """Creating all the important connections."""
-        try:
-            self.pool = asyncpg.create_pool(**Postgresql.asyncpg_config, command_timeout=60, loop=self.loop)
+        self.pool = asyncpg.create_pool(**Postgresql.asyncpg_config, command_timeout=60, loop=self.loop)
 
-            log.trace("Successfully connected to Postgres database.")
-
-        except Exception as e:
-            log.error("Failed to connect to Postgresql database", exc_info=(type(e), e, e.__traceback__))
+        log.trace("Successfully connected to Postgres database.")
 
         self.http_session = aiohttp.ClientSession()
 
-        self.database = Database(self.pool)
-
-        self.network = Network(self.http_session)
+        self.db = Database(self.pool)
 
         await super().login(*args, **kwargs)
 

@@ -7,9 +7,13 @@ from pathlib import Path
 
 import coloredlogs
 
-from xythrion.bot import CustomAbstractEventLoop, CustomContext, Xythrion
+from xythrion.bot import Xythrion
+from xythrion.context import Context
 
-__all__ = ("CustomContext", "CustomAbstractEventLoop", "Xythrion")
+__all__ = (
+    "Xythrion",
+    "Context",
+)
 
 logging.TRACE = 15
 logging.addLevelName(logging.TRACE, "TRACE")
