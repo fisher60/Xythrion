@@ -17,7 +17,7 @@ class Reddit(Cog):
         if "https://www.reddit.com/r/" in message.content:
             url = f'{message.content.rsplit("/", maxsplit=1)[0]}.json'
 
-            data = await self.bot.network.request(url)
+            data = await self.bot.request(url)
 
             d = data[0]["data"]["children"][0]["data"]
 

@@ -33,7 +33,8 @@ class Weather(Cog):
     @weather.command()
     async def mars(self, ctx: Context) -> None:
         """Getting weather on the planet of Mars."""
-        data = await self.bot.network.request(MARS_URL)
+        data = await self.bot.request(MARS_URL)
+
         sol_numbers = data["sol_keys"]
         sols = {sol: [v for k, v in data[sol]["PRE"].items() if k != "ct"] for sol in sol_numbers}
 
