@@ -22,6 +22,5 @@ repos:
         description: This hook runs flake8 within our project's poetry environment.
         entry: poetry run flake8
         language: system
-        types: [python]
+        types: [ python ]
         require_serial: true
-

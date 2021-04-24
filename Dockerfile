@@ -32,4 +32,3 @@ COPY . .
 
 # Run the bot.
 CMD ["python", "-m", "xythrion"]
-

@@ -1,11 +1,11 @@
 name: Linting
 
-on: [push]
+on: [ push ]
 
 jobs:
   lint:
     name: Run pre-commit & flake8
-    
+
     runs-on: ubuntu-latest
 
     env:
@@ -41,7 +41,7 @@ jobs:
         run: |
           pip install poetry
           poetry install --no-interaction --no-ansi
-      
+
       - name: Pre-commit Environment Caching
         uses: actions/cache@v2
         with:
@@ -50,9 +50,8 @@ jobs:
           ${{ steps.python.outputs.python-version }}-\
           ${{ hashFiles('./.pre-commit-config.yaml') }}"
 
-      - name: Run pre-commit 
+      - name: Run pre-commit
         run: export PIP_USER=0; SKIP=flake8 pre-commit run --all-files
 
       - name: Run flake8
         run: flake8
-

@@ -19,7 +19,7 @@ class Factorio(Cog):
     @staticmethod
     async def decode_base64_gzipped_json_string(string: str) -> Dict[str, Any]:
         """
-        With a string that's been encoded by base64 and compressed, this method unpacks and delivers a dictionary.
+        Unpacks and delivers a dictionary of item information from a base64 encoded compressed string.
 
         Skipping first byte after string is converted to bytes then a bytearray to gloss over version number.
 
