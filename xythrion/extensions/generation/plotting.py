@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import re
-from tempfile import TemporaryFile
 from typing import Tuple, Union
 
 import numpy as np
@@ -9,8 +8,8 @@ from discord.ext.commands import Cog, Context, group
 from sympy import Symbol
 from sympy.parsing.sympy_parser import parse_expr
 
-from xythrion import Xythrion, CustomContext
-from xythrion.utils import DefaultEmbed, graph_2d, check_for_subcommands, remove_whitespace
+from xythrion import CustomContext, Xythrion
+from xythrion.utils import DefaultEmbed, check_for_subcommands, graph_2d, remove_whitespace
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class Plotting(Cog):
 
     @staticmethod
     def calculate(
-        expression: str, symmetrical_bounds: Union[int, float] = 10
+            expression: str, symmetrical_bounds: Union[int, float] = 10
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate y-axis values from a set of x-axis values, given a math expression."""
         symmetrical_bounds = abs(symmetrical_bounds)
@@ -83,9 +82,9 @@ class Plotting(Cog):
     @plot.command(aliases=("point",), enabled=False)
     async def points(self, ctx: CustomContext, *, points: remove_whitespace) -> None:
         """
-        plots points on a plot.
+        Plots points on a plot.
 
-        Format: (x0, y0), (x1, y1), (x2, y2),... up to 10 points.
+        Format: (x0, y0), (x1, y1), (x2, y2),...
         """
         if not (point_array := re.finditer(POINT_ARRAY_FORMAT, points)):
             embed = DefaultEmbed(ctx, desc="Illegal character(s) in point array.")
